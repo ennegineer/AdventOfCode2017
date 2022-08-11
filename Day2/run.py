@@ -19,4 +19,20 @@ def PartOne():
     df['Dif'] = df['Max'] - df['Min']
     answer = df['Dif'].sum()
     print(answer)
-PartOne()
+
+
+def PartTwo():
+    answer = 0
+    numColumns = 16
+    for index, row in df.iterrows():
+        for i in range(numColumns):
+            for j in range(numColumns):
+                if (row[i] % row[j] == 0 and row[i] != row[j]):
+                    answer += int(row[i] / row[j])
+                    break
+                elif (row[j] % row[i] == 0 and row[i] != row[j]):
+                    answer += int(row[j] / row[i])
+                    break
+        print(answer/2)
+
+PartTwo()
