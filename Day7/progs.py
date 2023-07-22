@@ -9,50 +9,45 @@ with open('roster.txt', 'r') as file:
     for row in csvreader:
         data.append(row[0])
 
-programs = []
+programs = {}
 
 class Program:
-    def __init__(self, name, weight, supporting):
+    def __init__(self, name, weight, supporting, supported = False):
         self.name = name
         self.weight = weight
         self.supporting = supporting
+        self.supported = supported
 
     def printProg(self):
         print(self.name, self.supporting)
 
 def PartOne():
-    for row in data[0:15]:
+    for row in data:
         prog_name = row.split(' ')[0]
         prog_weight = row[row.find('(') + 1:row.find(')')]
         prog_supports = []
-        print(row)
 
         if '->' in row:
             supports = row[row.find('>')+2:len(row)+1].split(',')
             for item in supports:
                 prog_supports.append(item.replace(' ', ''))
-            # supports = [item for item in prog_supports if item.strip()]
-        programs.append(Program(prog_name, prog_weight, prog_supports)) 
-        print(f'{prog_name}, {prog_weight}, {prog_supports}')
+        # Parse data into fields
+        programs[prog_name] = Program(prog_name, prog_weight, prog_supports)
 
-        # Our program data is now in a class! Now we need to find the program at the bottom. This program will not be supported by any other program.
+        # Our program data is now in a dictionary! Now we need to find the program at the bottom. This program will not be supported by any other program.
 
-        # If len(prog_supports) > 0... 
-        ## rule out all programs listed in another's prog_supports
+        # rule out all programs listed in another's prog_supports
 
-        bottom_program = []
-        for prog in programs:
-            if len(prog.supporting) > 0:
-                bottom_program.append(prog)
-        print(bottom_program)
+    # Loop through all programs and those supported by each
+    for name, program in programs.items():
+        for supported_program_name in program.supporting:
+            # Find the supported programs' dictionary entry and update 'supported' to true
+            programs[supported_program_name].supported = True
 
-        for item in bottom_program:
-            for supported_prog in item.supporting:
-                if supported_prog in item.supporting:
-                # remove from the list of bottom_programs if it's being supported by another
-                ## loop through bottom_program contenders to see
-                    
-                    pass
+    # Filter the dictionary to locate the program that is not supported by any others
+    bottom_program = [name for name, program in programs.items() if programs[name].supported == False]
+
+    print(bottom_program)
 
 
 PartOne()
